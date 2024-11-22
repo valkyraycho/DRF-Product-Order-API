@@ -1,6 +1,13 @@
+from collections.abc import Sequence
+
 from django.db.models import Max, QuerySet
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (
+    AllowAny,
+    BasePermission,
+    IsAdminUser,
+    IsAuthenticated,
+)
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,6 +19,12 @@ from .serializers import OrderSerializer, ProductSerializer, ProductsInfoSeriali
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_permissions(self) -> Sequence[BasePermission]:
+        self.permission_classes = (AllowAny,)
+        if self.request.method == "POST":
+            self.permission_classes = (IsAdminUser,)
+        return super().get_permissions()  # type: ignore
 
 
 class ProductDetailView(generics.RetrieveAPIView):
