@@ -64,5 +64,5 @@ class OrderListView(generics.ListAPIView):
 
 
 class OrderDetailView(generics.RetrieveAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.prefetch_related("items__product")
     serializer_class = OrderSerializer
