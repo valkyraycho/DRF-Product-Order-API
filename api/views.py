@@ -37,7 +37,7 @@ def products_info_view(request: Request) -> Response:
 
 @api_view(["GET"])
 def order_list_view(request: Request) -> Response:
-    orders = Order.objects.all()
+    orders = Order.objects.prefetch_related("items__product")
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
