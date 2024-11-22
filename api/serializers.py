@@ -36,6 +36,7 @@ class OrderItemSerializer(serializers.ModelSerializer[OrderItem]):
 class OrderSerializer(serializers.ModelSerializer[Order]):
     items = OrderItemSerializer(many=True, read_only=True)
     total_price = serializers.SerializerMethodField()
+    user = serializers.StringRelatedField()
 
     class Meta:
         model = Order
