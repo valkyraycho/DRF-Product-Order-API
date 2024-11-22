@@ -1,9 +1,9 @@
 from django.db.models import Max, QuerySet
 from rest_framework import generics
-from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Order, Product
 from .serializers import OrderSerializer, ProductSerializer, ProductsInfoSerializer
@@ -19,17 +19,17 @@ class ProductDetailView(generics.RetrieveAPIView):
     serializer_class = ProductSerializer
 
 
-@api_view(["GET"])
-def products_info_view(request: Request) -> Response:
-    products = Product.objects.all()
-    serializer = ProductsInfoSerializer(
-        {
-            "products": products,
-            "count": len(products),
-            "max_price": products.aggregate(max_price=Max("price"))["max_price"],
-        }
-    )
-    return Response(serializer.data)
+class ProductInfoView(APIView):
+    def get(self, request: Request) -> Response:
+        products = Product.objects.all()
+        serializer = ProductsInfoSerializer(
+            {
+                "products": products,
+                "count": len(products),
+                "max_price": products.aggregate(max_price=Max("price"))["max_price"],
+            }
+        )
+        return Response(serializer.data)
 
 
 class OrderListView(generics.ListAPIView):
