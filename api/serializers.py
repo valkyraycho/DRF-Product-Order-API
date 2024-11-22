@@ -6,6 +6,8 @@ from .models import Order, OrderItem, Product
 
 
 class ProductSerializer(serializers.ModelSerializer[Product]):
+    price = serializers.FloatField()
+
     class Meta:
         model = Product
         fields = ("name", "description", "price", "stock")
@@ -14,6 +16,12 @@ class ProductSerializer(serializers.ModelSerializer[Product]):
         if value <= 0:
             raise serializers.ValidationError("Price must be greater than 0")
         return value
+
+
+class ProductsInfoSerializer(serializers.Serializer):
+    products = ProductSerializer(many=True, read_only=True)
+    count = serializers.IntegerField(read_only=True)
+    max_price = serializers.FloatField(read_only=True)
 
 
 class OrderItemSerializer(serializers.ModelSerializer[OrderItem]):
