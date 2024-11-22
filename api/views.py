@@ -26,9 +26,15 @@ class ProductListCreateView(generics.ListCreateAPIView):
         return super().get_permissions()  # type: ignore
 
 
-class ProductDetailView(generics.RetrieveAPIView):
+class ProductDetailUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_permissions(self) -> Sequence[BasePermission]:
+        self.permission_classes = (IsAuthenticated,)
+        if self.request.method in ("PUT", "PATCH", "DELETE"):
+            self.permission_classes = (IsAdminUser,)
+        return super().get_permissions()  # type: ignore
 
 
 class ProductInfoView(APIView):
@@ -58,6 +64,6 @@ class UserOrderListView(generics.ListAPIView):
         return super().get_queryset().filter(user=self.request.user)
 
 
-class OrderDetailView(generics.RetrieveAPIView):
+class OrderDetailUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.prefetch_related("user", "items__product")
     serializer_class = OrderSerializer
