@@ -10,7 +10,7 @@ class ProductSerializer(serializers.ModelSerializer[Product]):
 
     class Meta:
         model = Product
-        fields = ("name", "description", "price", "stock")
+        fields = ("id", "name", "description", "price", "stock")
 
     def validate_price(self, value: Decimal) -> Decimal:
         if value <= 0:

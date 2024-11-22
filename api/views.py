@@ -9,8 +9,8 @@ from .models import Order, Product
 from .serializers import OrderSerializer, ProductSerializer, ProductsInfoSerializer
 
 
-class ProductListView(generics.ListAPIView):
-    queryset = Product.objects.filter(stock__gt=0)
+class ProductListCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
