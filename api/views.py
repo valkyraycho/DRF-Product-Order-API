@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 
 from django.db.models import Max, QuerySet
-from rest_framework import generics
+from rest_framework import filters, generics
 from rest_framework.permissions import (
     BasePermission,
     IsAdminUser,
@@ -20,6 +20,9 @@ class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filterset_class = ProductFilterSet
+    filter_backends = (filters.SearchFilter, filters.OrderingFilter)
+    search_fields = ("name", "description")
+    ordering_fields = ("name", "price", "stock")
 
     def get_permissions(self) -> Sequence[BasePermission]:
         self.permission_classes = (IsAuthenticated,)
